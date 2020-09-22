@@ -1,0 +1,229 @@
+{
+	"info": {
+		"_postman_id": "20ec9582-cf4f-42ea-a857-78eaebc86c94",
+		"name": "CRUD test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "POST user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3964f084-5117-4067-82fe-2252bc884c30",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "8bcd4775-897d-4094-ad6d-b0c7efe47e05",
+						"exec": [
+							"const uuid = require('uuid')\r",
+							"postman.setEnvironmentVariable('userId', 'eu-west-1:' + uuid());\r",
+							"console.log('userid: ' + postman.getEnvironmentVariable('userId'))\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userId\":\"{{userId}}\",\r\n    \"ssn\":\"197302190599\",\r\n    \"isPEP\":false,\r\n    \"isUSCitizen\":false,\r\n    \"firstName\":\"Sunne\",\r\n    \"lastName\":\"Svens\",\r\n    \"street\":\"Hjortvägen 6\",\r\n    \"city\":\"Bjurås\",\r\n    \"postalNumber\":\"17832\",\r\n    \"salary\":41000,\r\n    \"createdAt\":\"2019-04-23T10:30:52.000Z\",\r\n    \"updatedAt\":\"2020-08-12T08:03:54.861Z\"\r\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl_User}}/user",
+					"host": [
+						"{{baseUrl_User}}"
+					],
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET user before PUT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d48d589c-1071-4266-8e0a-63699fd7f090",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://j5uwxuntbd.execute-api.eu-west-1.amazonaws.com/dev/user/{{userId}}",
+					"protocol": "https",
+					"host": [
+						"j5uwxuntbd",
+						"execute-api",
+						"eu-west-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"dev",
+						"user",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "105300bf-6ae9-4aee-8a7b-7456119e12b8",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response to be 1\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.response).to.eql(1);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"userId\":\"{{userId}}\",\r\n    \"ssn\":\"197302190599\",\r\n    \"isPEP\":false,\r\n    \"isUSCitizen\":true,\r\n    \"firstName\":\"Sunne\",\r\n    \"lastName\":\"Svens\",\r\n    \"street\":\"Hjortvägen 6\",\r\n    \"city\":\"Bjurås\",\r\n    \"postalNumber\":\"17832\",\r\n    \"salary\":{{updatedSalary}},\r\n    \"createdAt\":\"2019-04-23T10:30:52.000Z\",\r\n    \"updatedAt\":\"2020-08-12T08:03:54.861Z\"\r\n}"
+				},
+				"url": {
+					"raw": "https://j5uwxuntbd.execute-api.eu-west-1.amazonaws.com/dev/user",
+					"protocol": "https",
+					"host": [
+						"j5uwxuntbd",
+						"execute-api",
+						"eu-west-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"dev",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET user after PUT",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "207a76ea-7291-4174-a8b5-60926c8725d7",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Verify updated salary\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.response.salary).to.eql(parseInt(postman.getEnvironmentVariable('updatedSalary'), 10));\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://j5uwxuntbd.execute-api.eu-west-1.amazonaws.com/dev/user/{{userId}}",
+					"protocol": "https",
+					"host": [
+						"j5uwxuntbd",
+						"execute-api",
+						"eu-west-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"dev",
+						"user",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7381d962-7c75-4783-883c-dc0fc6074a1d",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Body contains 1\", function () {\r",
+							"    pm.expect(pm.response.text()).to.include(\"1\");\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://j5uwxuntbd.execute-api.eu-west-1.amazonaws.com/dev/user/{{userId}}",
+					"protocol": "https",
+					"host": [
+						"j5uwxuntbd",
+						"execute-api",
+						"eu-west-1",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"dev",
+						"user",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
